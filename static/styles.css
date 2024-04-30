@@ -1,0 +1,330 @@
+/* Resetting default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Basic styling for navbar */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+  }
+  
+  .navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px; /* Adjust spacing between nav items */
+    font-weight: bold;
+  }
+  
+  .navbar a:hover {
+    color: #8b8a7f; /* Change color on hover */
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    margin-right: auto; /* Push logo to the left */
+  }
+  
+  /* Right-aligned nav links */
+  .nav-links {
+    list-style-type: none;
+    display: flex;
+    justify-content: flex-end; /* Align links to the right */
+  }
+  
+  .nav-links li {
+    margin-left: 20px; /* Adjust spacing between nav items */
+  }
+  
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .nav-links a:hover {
+    color: #8b8a7f; /* Change color on hover */
+  }
+  
+  /* Styling for banner */
+  .banner {
+    background-image: url('banner_image.jpeg'); 
+    background-size: cover; /* Cover the entire container */
+    background-position: center;
+    color: #fff;
+    text-align: center;
+    padding: 100px 0;
+    height: 100vh; /* Set height to full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0.7;
+    
+  }
+  
+  .banner h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: rgb(246, 250, 35);
+  }
+  
+  .banner p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: rgb(246, 250, 35);
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Basic styling for footer */
+  /* footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    
+  } */
+.login-container1{
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+.login-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    overflow: hidden;
+}
+
+form {
+    margin-top: 20px;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+h2, h5 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+label {
+    color: black;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#captcha-container {
+    margin-bottom: 15px;
+    max-height: 100%;
+    max-width: 100%;
+    
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 400px) {
+    .login-container {
+        width: 90%;
+    }
+}
+
+table {
+  border: 1px;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 86%;
+  margin: auto;
+}
+
+td,
+th {
+  border: 1px solid black !important;
+  padding: 5px;
+  color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+/* .admin-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 100px;
+  margin: 20px;
+} */
+/* .attendance-container {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 20px 20px 20px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  flex: 2;
+} */
+/* .newuser-container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 20px 20px 20px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  flex: 1;
+} */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Banner styles */
+.banner {
+  background-color: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+}
+
+.banner h1 {
+  margin: 0;
+  font-size: 36px;
+}
+
+/* Admin container styles */
+.admin-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 20px;
+}
+
+.attendance-container {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 20px 20px 20px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* max-width: 100%; */
+  width: 1000px;
+  max-height: 100%;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.newuser-container {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 20px 20px 20px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* max-width: 100%; */
+  max-height: 100%;
+  width: 400px;
+  overflow: hidden;
+  /* flex: 1; */
+  margin-right: 20px;
+}
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.attendance-table th {
+  background-color: #f2f2f2;
+}
+
+.newuser-container form {
+  max-width: 400px;
+}
+
+.newuser-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.newuser-container input[type="text"],
+.newuser-container input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.newuser-container button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+/* Footer styles */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}

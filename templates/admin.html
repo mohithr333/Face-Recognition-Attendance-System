@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Attendance System</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+</head>  
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="container">
+        <a href="#" class="logo">FaceRec</a>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <section class="banner">
+    <h1 >Face Recognition Based Attendance System</h1>
+ 
+
+    <!-- {% if mess%}
+    <p class="text-center" style="color: red;font-size: 20px;">{{ mess }}</p>
+    {% endif %} -->
+
+  <div class="admin-container">
+    <div class="attendance-container">
+      <h2>Today's Attendance <i class="material-icons">assignment</i></h2>
+      <table class="attendance-table">
+        <tr>
+            <td><b>S No</b></td>
+            <td><b>Name</b></td>
+            <td><b>ID</b></td>
+            <td><b>Time</b></td>
+        </tr>
+        {% if l %}
+
+        {% for i in range(l) %}
+        <tr>
+            <td>{{ i+1 }}</td>
+            <td>{{ names[i] }}</td>
+            <td>{{ rolls[i] }}</td>
+            <td>{{ times[i] }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+    </div>
+
+    <div class="newuser-container">
+      <form action='/add' method="POST" enctype="multipart/form-data">
+        <h2>Add New User <i class="material-icons">control_point_duplicate</i></h2>
+        <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="newusername" name="newusername" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="newpassword" name="newpassword" required>
+      </div>
+      <div class="form-group">
+        <label for="userId">User ID:</label>
+        <input type="text" id="newuserid" name="newuserid" required>
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="tel" id="newphone" name="newphone" pattern="[0-9]{10}" placeholder="e.g., 1234567890" required>
+      </div>
+        <button>Add New User</button><br>
+        <h5 style="padding: 25px;"><i>Total Users in Database: {{totalreg}}</i></h5>
+      </form>
+    </div>
+  </div>
+  </section>
+  
+  <!-- Other sections or content can be added here -->
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 FaceRec | All rights reserved</p>
+    </div>
+  </footer>
+</body>
+</html>

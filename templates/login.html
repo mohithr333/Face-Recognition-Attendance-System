@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Attendance System</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfxQMkpAAAAAJgWY4LmbE2Pp51sG_ryc9nKwJVP"></script>
+    <!-- Google reCAPTCHA script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>  
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="container">
+        <a href="#" class="logo">FaceRec</a>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <section class="banner">
+    <div class="login-container1">
+        <div class="login-container">
+            <h2>Login</h2>
+            {% if mfa_required %}
+        <p>An OTP has been sent to your registered phone number or email address.</p>
+        <form method="post" action="/verify_otp" class="login-form">
+            <input type="hidden" name="username" value="{{ username }}">
+            <input type="hidden" name="password" value="{{ password }}">
+            <label for="otp">Enter OTP:</label>
+            <input type="text" id="otp" name="otp" required><br><br>
+            <button type="submit">Verify OTP</button>
+        </form>
+    {% else %}
+        <form method="post" action="/login" class="login-form" onsubmit="return onSubmit(event)">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <div id="captcha-container" class="g-recaptcha" data-sitekey="6LfxQMkpAAAAAJgWY4LmbE2Pp51sG_ryc9nKwJVP"></div>
+            <button type="submit">Login</button>
+        </form>
+    {% endif %}
+        </div>
+    
+        <script>
+            function onSubmit(event) {
+                var response = grecaptcha.getResponse();
+                if (response.length === 0) {
+                    alert('Please complete the CAPTCHA challenge.');
+                    return false; // Prevent form submission if CAPTCHA is not completed
+                }
+                // CAPTCHA is completed, proceed with form submission
+                return true;
+            }
+        </script>
+    </div>
+  </section>
+
+  <!-- Other sections or content can be added here -->
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 FaceRec | All rights reserved</p>
+    </div>
+  </footer>
+</body>
+</html>
