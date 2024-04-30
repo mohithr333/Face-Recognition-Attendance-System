@@ -214,9 +214,10 @@ def start():
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     newusername = request.form['newusername']
-    newuserId = request.form['newuserId']
-    
-    userimagefolder = 'static/faces/'+newusername+'_'+str(newuserId)
+    newuserid = request.form['newuserid']
+    newpassword = request.form['newpassword']
+    newphone = request.form['newphone']
+    userimagefolder = 'static/faces/'+newusername+'_'+str(newuserid)
     if not os.path.isdir(userimagefolder):
         os.makedirs(userimagefolder)
     i, j = 0, 0
