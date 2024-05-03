@@ -6,6 +6,23 @@
     <title>Face Recognition Attendance System</title>
     <link rel="stylesheet" href="static/styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script>
+        function toggleSection(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section.style.display === "none") {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+            // Hide other sections when one is shown
+            var allSections = document.getElementsByClassName("section-container");
+            for (var i = 0; i < allSections.length; i++) {
+                if (allSections[i].id !== sectionId) {
+                    allSections[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 
 </head>  
 <body>
@@ -23,42 +40,40 @@
   </header>
 
   <section class="banner">
-    <div class='mt-3 text-center'>
-        <h1 style="width: auto;margin: auto;color: white;padding: 11px;font-size: 44px;">Face Recognition Based
-            Attendance System</h1>
-    </div>
-
+    <h1>Face Recognition Based Attendance System</h1>
     {% if mess%}
     <p class="text-center" style="color: red;font-size: 20px;">{{ mess }}</p>
     {% endif %}
-
-    
     <div class="user-container">
       <div class="user-container2">
         <h2>Today's Attendance <i class="material-icons">assignment</i></h2>
         <a style="text-decoration: none;max-width: 300px;" href="/start">
         <button style="font-size: 24px;font-weight: bold;border-radius: 10px;width:490px;padding: 10px;margin-top: 30px;margin-bottom: 30px;" type='submit' class='btn btn-primary'>Take Attendance<i class="material-icons">beenhere</i></button>
         </a>
-        <table style="background-color: white;">
-          <tr>
-            <td><b>S No</b></td>
-            <td><b>Name</b></td>
-            <td><b>ID</b></td>
-            <td><b>Time</b></td>
-          </tr>
-      {% if l %}
-    
-      {% for i in range(l) %}
-          <tr>
-            <td>{{ i+1 }}</td>
-            <td>{{ names[i] }}</td>
-            <td>{{ rolls[i] }}</td>
-            <td>{{ times[i] }}</td>
-          </tr>
-          {% endfor %}
-          {% endif %}
-        </table>
-    
+        <div class="admin-container">
+          <div class="user-attendance-container">
+            <h2>Today's Attendance <i class="material-icons">assignment</i></h2>
+            <table class="attendance-table">
+              <tr>
+                  <td><b>S No</b></td>
+                  <td><b>Name</b></td>
+                  <td><b>ID</b></td>
+                  <td><b>Time</b></td>
+              </tr>
+              {% if l %}
+      
+              {% for i in range(l) %}
+              <tr>
+                  <td>{{ i+1 }}</td>
+                  <td>{{ names[i] }}</td>
+                  <td>{{ rolls[i] }}</td>
+                  <td>{{ times[i] }}</td>
+              </tr>
+              {% endfor %}
+              {% endif %}
+          </table>
+          </div>
+        </div>
       </div>
             
     </div>

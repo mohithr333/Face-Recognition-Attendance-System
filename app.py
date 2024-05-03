@@ -97,24 +97,31 @@ def add_attendance(name):
 
 ## A function to get names and roll numbers of all users
 def getallusers():
-    userlist = os.listdir('static/faces')
-    names = []
-    rolls = []
-    l = len(userlist)
+    user_data = pd.read_csv('new_users.csv', names=['username', 'userid', 'password', 'phone'])
+    userlist = user_data.apply(lambda row: f"{row['username']}_{row['userid']}", axis=1).tolist()
+    names = user_data['username'].tolist()
+    rolls = user_data['userid'].tolist()
+    phones = user_data['phone'].tolist()
+    l = len(user_data)
 
-    for i in userlist:
-        name, roll = i.split('_')
-        names.append(name)
-        rolls.append(roll)
-
-    return userlist, names, rolls, l
+    return userlist, names, rolls, phones, l
 
 ## A function to delete a user folder
 def deletefolder(duser):
-    pics = os.listdir(duser)
-    for i in pics:
-        os.remove(os.path.join(duser, i))
-    os.rmdir(duser)
+    try:
+        user_folder = os.path.join('static/faces', duser)
+        if os.path.exists(user_folder):
+            pics = os.listdir(user_folder)
+            for pic in pics:
+                os.remove(os.path.join(user_folder, pic))
+            os.rmdir(user_folder)
+            return True  # Folder deleted successfully
+        else:
+            print(f"Folder '{duser}' does not exist.")
+            return False  # Folder does not exist
+    except Exception as e:
+        print(f"Error deleting folder '{duser}': {e}")
+        return False  # Error occurred while deleting folder
 
 ################## ROUTING FUNCTIONS #########################
 
@@ -164,22 +171,19 @@ def login():
 # User page
 @app.route('/user')
 def user_page():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    names, rolls, times, l = extract_attendance()
-    userlist, _, _, _ = getallusers()  # Extract userlist from getallusers function
-    # Retrieve user-specific data or perform actions based on session username
-    return render_template('user.html', username=session['username'], names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2, userlist=userlist)
-    # return render_template('user.html', username=session['username'])
+    if 'username' in session:
+        userlist = getallusers()
+        return render_template('user.html', userlist=userlist)
+    return redirect(url_for('login'))
 
 # Admin Page
 @app.route('/admin')
 def admin_page():
     if 'logged_in' not in session or not session['logged_in']:
         return redirect(url_for('login'))
-    
+
     names, rolls, times, l = extract_attendance()
-    userlist, _, _, _ = getallusers()  # Extract userlist from getallusers function
+    userlist, _, _, _, _ = getallusers()  # Updated unpacking
     return render_template('admin.html', names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2, userlist=userlist)
 
 ## List users page
@@ -199,19 +203,24 @@ def deleteuser():
     user_data = user_data[~user_data['username'].str.startswith(duser.split('_')[0])]  # Remove entries for this user
     user_data.to_csv('new_users.csv', index=False)  # Save updated CSV file
 
-    ## if all the face are deleted, delete the trained file...
-    if not os.listdir('static/faces/'):
-        os.remove('static/face_recognition_model.pkl')
+    # Update user list and redirect to admin page
+    userlist, names, rolls, phones, l = getallusers()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('admin_page'))
 
-    try:
-        train_model()
-        flash('User deleted successfully!', 'success')  # Flash success message
-    except Exception as e:
-        flash('Error deleting user.', 'error')  # Flash error message
+    # ## if all the face are deleted, delete the trained file...
+    # if not os.listdir('static/faces/'):
+    #     os.remove('static/face_recognition_model.pkl')
 
-    userlist, names, rolls, l = getallusers()
-    # Pass all required variables to the template
-    return render_template('admin.html', userlist=userlist, names=names, rolls=rolls, l=l, times=[], totalreg=totalreg(), datetoday2=datetoday2)
+    # try:
+    #     train_model()
+    #     flash('User deleted successfully!', 'success')  # Flash success message
+    # except Exception as e:
+    #     flash('Error deleting user.', 'error')  # Flash error message
+
+    # userlist, names, rolls, l = getallusers()
+    # # Pass all required variables to the template
+    # return render_template('admin.html', userlist=userlist, names=names, rolls=rolls, l=l, times=[], totalreg=totalreg(), datetoday2=datetoday2)
 
 
 # Our main Face Recognition functionality
