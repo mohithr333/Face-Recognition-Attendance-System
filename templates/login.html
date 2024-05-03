@@ -26,26 +26,20 @@
   <section class="banner">
     <div class="login-container1">
         <div class="login-container">
-            <h2>Login</h2>
-            {% if mfa_required %}
-        <p>An OTP has been sent to your registered phone number or email address.</p>
-        <form method="post" action="/verify_otp" class="login-form">
-            <input type="hidden" name="username" value="{{ username }}">
-            <input type="hidden" name="password" value="{{ password }}">
-            <label for="otp">Enter OTP:</label>
-            <input type="text" id="otp" name="otp" required><br><br>
-            <button type="submit">Verify OTP</button>
-        </form>
-    {% else %}
-        <form method="post" action="/login" class="login-form" onsubmit="return onSubmit(event)">
+          <h2>Login</h2>     
+          <form method="post" action="/login" class="login-form" onsubmit="return onSubmit(event)">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required><br><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
             <div id="captcha-container" class="g-recaptcha" data-sitekey="6LfxQMkpAAAAAJgWY4LmbE2Pp51sG_ryc9nKwJVP"></div>
             <button type="submit">Login</button>
-        </form>
-    {% endif %}
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+              {{ error }}
+            </div>
+            {% endif %}
+          </form>
         </div>
     
         <script>

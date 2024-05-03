@@ -6,7 +6,24 @@
     <title>Face Recognition Attendance System</title>
     <link rel="stylesheet" href="static/styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+    <!-- Add JavaScript for feature toggling -->
+    <script>
+        function toggleSection(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section.style.display === "none") {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+            // Hide other sections when one is shown
+            var allSections = document.getElementsByClassName("section-container");
+            for (var i = 0; i < allSections.length; i++) {
+                if (allSections[i].id !== sectionId) {
+                    allSections[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </head>  
 <body>
   <header>
@@ -23,64 +40,113 @@
   </header>
 
   <section class="banner">
-    <h1 >Face Recognition Based Attendance System</h1>
- 
-
-    <!-- {% if mess%}
-    <p class="text-center" style="color: red;font-size: 20px;">{{ mess }}</p>
-    {% endif %} -->
-
-  <div class="admin-container">
-    <div class="attendance-container">
-      <h2>Today's Attendance <i class="material-icons">assignment</i></h2>
-      <table class="attendance-table">
-        <tr>
-            <td><b>S No</b></td>
-            <td><b>Name</b></td>
-            <td><b>ID</b></td>
-            <td><b>Time</b></td>
-        </tr>
-        {% if l %}
-
-        {% for i in range(l) %}
-        <tr>
-            <td>{{ i+1 }}</td>
-            <td>{{ names[i] }}</td>
-            <td>{{ rolls[i] }}</td>
-            <td>{{ times[i] }}</td>
-        </tr>
-        {% endfor %}
-        {% endif %}
-    </table>
+    <h1>Face Recognition Based Attendance System</h1>
+    <div class="dashboard-container">
+      <!-- Dashboard Feature Links -->
+      <ul class="dashboard-links">
+        <li><button href="javascript:void(0);" onclick="toggleSection('attendance-container')">Today's Attendance</button></li>
+        <li><button href="javascript:void(0);" onclick="toggleSection('newuser-container')">Add New User</button></li>
+        <li><button href="javascript:void(0);" onclick="toggleSection('user-list-container')">Users List</button></li>
+      </ul>
     </div>
-
-    <div class="newuser-container">
-      <form action='/add' method="POST" enctype="multipart/form-data">
-        <h2>Add New User <i class="material-icons">control_point_duplicate</i></h2>
-        <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="newusername" name="newusername" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="newpassword" name="newpassword" required>
-      </div>
-      <div class="form-group">
-        <label for="userId">User ID:</label>
-        <input type="text" id="newuserid" name="newuserid" required>
-      </div>
-      <div class="form-group">
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="newphone" name="newphone" pattern="[0-9]{10}" placeholder="e.g., 1234567890" required>
-      </div>
-        <button>Add New User</button><br>
-        <h5 style="padding: 25px;"><i>Total Users in Database: {{totalreg}}</i></h5>
-      </form>
-    </div>
-  </div>
-  </section>
+    <!-- Attendance Container -->
+    <div class="admin-container">
+      <div id="attendance-container" class="section-container attendance-container">
+        <h2>Today's Attendance <i class="material-icons">assignment</i></h2>
+        <table class="attendance-table">
+          <tr>
+              <td><b>S No</b></td>
+              <td><b>Name</b></td>
+              <td><b>ID</b></td>
+              <td><b>Time</b></td>
+          </tr>
+          {% if l %}
   
-  <!-- Other sections or content can be added here -->
+          {% for i in range(l) %}
+          <tr>
+              <td>{{ i+1 }}</td>
+              <td>{{ names[i] }}</td>
+              <td>{{ rolls[i] }}</td>
+              <td>{{ times[i] }}</td>
+          </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+      </div>
+      <!-- New User Container -->
+      <div id="newuser-container" class="section-container newuser-container"> 
+        <form action='/add' method="POST" enctype="multipart/form-data">
+          <!-- Add this block to display flashed error messages -->
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-danger" role="alert">
+                  {{ message }}
+              </div>
+          {% endfor %}
+      {% endif %}
+  {% endwith %}
+          <h2>Add New User <i class="material-icons">control_point_duplicate</i></h2>
+          <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="newusername" name="newusername" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="newpassword" name="newpassword" required>
+        </div>
+        <div class="form-group">
+          <label for="userId">User ID:</label>
+          <input type="text" id="newuserid" name="newuserid" required>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number:</label>
+          <input type="tel" id="newphone" name="newphone" pattern="[0-9]{10}" placeholder="e.g., 1234567890" required>
+        </div>
+          <button>Add New User</button><br>
+          <h5 style="padding: 25px;"><i>Total Users in Database: {{totalreg}}</i></h5>
+        </form>
+      </div>
+      <!-- User List Container -->
+      <div id="user-list-container" class="section-container user-list-container" style="display: none;">
+        <h2>User List <i class="material-icons">list</i></h2>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>User ID</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in userlist %}
+                <tr>
+                  {% set user_info = user.split('_') %}
+                  <td>{{ user_info[0] }}</td>
+                  <td>{{ user_info[1] }}</td>
+                  <td><a href="/deleteuser?user={{ user }}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-success" role="alert">{{ message }}</div>
+          {% endfor %}
+      {% endif %}
+  {% endwith %}
+    </div>
+    
+    </div>
+  </section>
+
+  <div class="logout-container">
+    <!-- Add a form for logout -->
+    <form action="/logout" method="POST">
+      <input class="logout-button" type="submit" value="Logout">
+    </form>
+  </div>
 
   <footer>
     <div class="container">

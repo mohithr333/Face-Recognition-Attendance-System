@@ -92,19 +92,9 @@
     border-radius: 5px;
     transition: background-color 0.3s ease;
   }
-  
   .btn:hover {
     background-color: #0056b3;
-  }
-  
-  /* Basic styling for footer */
-  /* footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-    
-  } */
+  } 
 .login-container1{
     font-family: Arial, sans-serif;
     display: flex;
@@ -120,7 +110,6 @@
     width: 350px;
     overflow: hidden;
 }
-
 form {
     margin-top: 20px;
 }
@@ -132,7 +121,6 @@ h2, h5 {
     color: #007bff;
     margin-bottom: 20px;
 }
-
 label {
     color: black;
     display: block;
@@ -140,7 +128,6 @@ label {
     font-weight: bold;
     text-align: left;
 }
-
 input[type="text"],
 input[type="password"],
 input[type="tel"] {
@@ -151,14 +138,12 @@ input[type="tel"] {
     border-radius: 5px;
     box-sizing: border-box;
 }
-
 #captcha-container {
     margin-bottom: 15px;
     max-height: 100%;
     max-width: 100%;
     
 }
-
 button {
     display: block;
     width: 100%;
@@ -169,21 +154,17 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-
 button:hover {
     background-color: #0056b3;
 }
-
 p {
     margin-bottom: 10px;
 }
-
 @media (max-width: 400px) {
     .login-container {
         width: 90%;
     }
 }
-
 table {
   border: 1px;
   font-family: arial, sans-serif;
@@ -191,7 +172,6 @@ table {
   width: 86%;
   margin: auto;
 }
-
 td,
 th {
   border: 1px solid black !important;
@@ -200,111 +180,66 @@ th {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
-
 tr:nth-child(even) {
   background-color: #dddddd;
 }
-/* .admin-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 100px;
-  margin: 20px;
-} */
-/* .attendance-container {
-  background-color: #ffffff;
-  padding: 10px;
-  border-radius: 20px 20px 20px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: 100%;
-  max-height: 100%;
-  overflow: hidden;
-  flex: 2;
-} */
-/* .newuser-container {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 20px 20px 20px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: 100%;
-  max-height: 100%;
-  overflow: hidden;
-  flex: 1;
-} */
-
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
-
 /* Banner styles */
 .banner {
   background-color: #f4f4f4;
   padding: 20px;
   text-align: center;
 }
-
 .banner h1 {
   margin: 0;
   font-size: 36px;
 }
-
 /* Admin container styles */
 .admin-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin: 20px;
+  align-items: center;
+  justify-content: center;
 }
-
-.attendance-container {
+.attendance-container, .newuser-container, .user-list-container {
+  display: none;
   background-color: #ffffff;
   padding: 10px;
   border-radius: 20px 20px 20px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  /* max-width: 100%; */
   width: 1000px;
   max-height: 100%;
   overflow: hidden;
-  margin-right: 20px;
 }
 .newuser-container {
-  background-color: #ffffff;
-  padding: 10px;
-  border-radius: 20px 20px 20px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  /* max-width: 100%; */
-  max-height: 100%;
   width: 400px;
-  overflow: hidden;
-  /* flex: 1; */
-  margin-right: 20px;
+}
+.user-list-container {
+  color: black;
 }
 .attendance-table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .attendance-table th,
 .attendance-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
-
 .attendance-table th {
   background-color: #f2f2f2;
 }
-
 .newuser-container form {
   max-width: 400px;
 }
-
 .newuser-container label {
   display: block;
   margin-bottom: 5px;
 }
-
 .newuser-container input[type="text"],
 .newuser-container input[type="number"] {
   width: 100%;
@@ -312,7 +247,6 @@ tr:nth-child(even) {
   margin-bottom: 10px;
   box-sizing: border-box;
 }
-
 .newuser-container button {
   background-color: #333;
   color: white;
@@ -320,11 +254,90 @@ tr:nth-child(even) {
   padding: 10px 20px;
   cursor: pointer;
 }
-
 /* Footer styles */
 footer {
   background-color: #333;
   color: white;
   text-align: center;
   padding: 10px 0;
+}
+.logout-container {
+  position: absolute;
+  top: 70px;
+  right: 65px;
+}
+.logout-button {
+  background-color: #469cf8;
+  width: 100px;
+  height: 40px;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  border: none;
+  color: white;
+  font-size: medium;
+  font-weight: bold;
+}
+.alert {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+}
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+.dashboard-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+  list-style-type: none;
+}
+
+.dashboard-links li button{
+  width: 150px;
+  height: 80px;
+  background-color: bisque;
+  margin-right: 50px;
+  text-align: center;
+  padding: 20px;
+  border-radius: 5px;
+  color: #e219a6;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.logout-button:hover {
+  background-color: #51d6ff;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .container {
+    width: 90%;
+  }
+
+  .nav-links li {
+    margin-right: 10px;
+  }
+  .dashboard-links li {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .dashboard-links a {
+    font-size: 16px;
+  }
+
+  .logout-button {
+    padding: 8px 16px;
+  }
 }

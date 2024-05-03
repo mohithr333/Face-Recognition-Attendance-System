@@ -1,6 +1,6 @@
 import cv2
 import os
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session, flash
 from datetime import date, datetime
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
@@ -8,10 +8,14 @@ import pandas as pd
 import joblib
 import secrets
 import requests
+import hashlib
 
 # Defining Flask App
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(24)  # Set a secure random key for session management
+
+# Define a dictionary to store user credentials (temporary storage for demonstration)
+user_credentials = {}
 
 # Replace these with your reCAPTCHA keys
 RECAPTCHA_SITE_KEY = '6LfxQMkpAAAAAJgWY4LmbE2Pp51sG_ryc9nKwJVP'
@@ -125,27 +129,49 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # Check admin credentials
+
         if username == 'admin' and password == 'password':
             session['logged_in'] = True
             return redirect(url_for('admin_page'))  # Redirect to admin_page
-        elif username == 'mohith' and password == 'hello123':
-            session['logged_in'] = True
-            return redirect(url_for('user_page')) # Redirect to user_page
+        if username == 'user' and password == 'user':
+            session['username'] = True
+            return redirect(url_for('user_page'))  # Redirect to admin_page
+
+        # Check if the username exists in user_credentials or new_users.csv
+        if username in user_credentials:
+            stored_password = user_credentials[username]['password']
         else:
-            error_message = 'Invalid credentials. Please try again.'
-            return render_template('login.html', error=error_message)
+            # Fetch the stored password from new_users.csv
+            user_data = pd.read_csv('new_users.csv', names=['username', 'userid', 'password', 'phone'])
+            user_row = user_data[user_data['username'] == username]
+            if user_row.empty:
+                error_message = 'Invalid credentials. Please try again.'
+                return render_template('login.html', error=error_message)
+            stored_password = user_row.iloc[0]['password']
+
+        # Hash the provided password and compare with stored hashed password
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        if hashed_password == stored_password:
+            # Successful login, set session and redirect
+            session['username'] = username
+            return redirect(url_for('user_page'))
+
+        error_message = 'Invalid credentials. Please try again.'
+        return render_template('login.html', error=error_message)
 
     return render_template('login.html')
 
 # User page
 @app.route('/user')
 def user_page():
-    if 'logged_in' not in session or not session['logged_in']:
+    if 'username' not in session:
         return redirect(url_for('login'))
-    
     names, rolls, times, l = extract_attendance()
-    return render_template('user.html', names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2)
+    userlist, _, _, _ = getallusers()  # Extract userlist from getallusers function
+    # Retrieve user-specific data or perform actions based on session username
+    return render_template('user.html', username=session['username'], names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2, userlist=userlist)
+    # return render_template('user.html', username=session['username'])
+
 # Admin Page
 @app.route('/admin')
 def admin_page():
@@ -153,7 +179,8 @@ def admin_page():
         return redirect(url_for('login'))
     
     names, rolls, times, l = extract_attendance()
-    return render_template('admin.html', names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2)
+    userlist, _, _, _ = getallusers()  # Extract userlist from getallusers function
+    return render_template('admin.html', names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2, userlist=userlist)
 
 ## List users page
 @app.route('/listusers')
@@ -167,17 +194,25 @@ def deleteuser():
     duser = request.args.get('user')
     deletefolder('static/faces/'+duser)
 
+    # Remove user's entry from new_users.csv
+    user_data = pd.read_csv('new_users.csv', names=['username', 'userid', 'password', 'phone'])
+    user_data = user_data[~user_data['username'].str.startswith(duser.split('_')[0])]  # Remove entries for this user
+    user_data.to_csv('new_users.csv', index=False)  # Save updated CSV file
+
     ## if all the face are deleted, delete the trained file...
-    if os.listdir('static/faces/')==[]:
+    if not os.listdir('static/faces/'):
         os.remove('static/face_recognition_model.pkl')
 
     try:
         train_model()
-    except:
-        pass
+        flash('User deleted successfully!', 'success')  # Flash success message
+    except Exception as e:
+        flash('Error deleting user.', 'error')  # Flash error message
 
     userlist, names, rolls, l = getallusers()
-    return render_template('listusers.html', userlist=userlist, names=names, rolls=rolls, l=l, totalreg=totalreg(), datetoday2=datetoday2)
+    # Pass all required variables to the template
+    return render_template('admin.html', userlist=userlist, names=names, rolls=rolls, l=l, times=[], totalreg=totalreg(), datetoday2=datetoday2)
+
 
 # Our main Face Recognition functionality
 # This function will run when we click on Take Attendance Button.
@@ -213,43 +248,71 @@ def start():
 # This function will run when we add a new user.
 @app.route('/add', methods=['GET', 'POST'])
 def add():
-    newusername = request.form['newusername']
-    newuserid = request.form['newuserid']
-    newpassword = request.form['newpassword']
-    newphone = request.form['newphone']
-    userimagefolder = 'static/faces/'+newusername+'_'+str(newuserid)
-    if not os.path.isdir(userimagefolder):
-        os.makedirs(userimagefolder)
-    i, j = 0, 0
-    cap = cv2.VideoCapture(0)
-    while 1:
-        _, frame = cap.read()
-        faces = extract_faces(frame)
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 20), 2)
-            cv2.putText(frame, f'Images Captured: {i}/{nimgs}', (30, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 20), 2, cv2.LINE_AA)
-            if j % 5 == 0:
-                name = newusername+'_'+str(i)+'.jpg'
-                cv2.imwrite(userimagefolder+'/'+name, frame[y:y+h, x:x+w])
-                i += 1
-            j += 1
-        if j == nimgs*5:
-            break
-        cv2.imshow('Adding new User', frame)
-        if cv2.waitKey(1) == 27:
-            break
-    cap.release()
-    cv2.destroyAllWindows()
-    print('Training Model')
-    train_model()
-    names, rolls, times, l = extract_attendance()
-    return render_template('home.html', names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2)
+    if request.method == 'POST':
+        newusername = request.form['newusername']
+        newuserid = request.form['newuserid']
+        newpassword = request.form['newpassword']
+        newphone = request.form['newphone']
 
+        # Check if username already exists
+        if newusername in user_credentials:
+            error_message = 'Username already exists. Please choose a different username.'
+            flash(error_message, 'error')  # Flash error message
+            return redirect(url_for('admin_page'))
+    
+        # Check if username already exists in the CSV file
+        user_data = pd.read_csv('new_users.csv', names=['username', 'userid', 'password', 'phone'])
+        if newusername in user_data['username'].values:
+            error_message = 'Username already exists. Please choose a different username.'
+            flash(error_message, 'error')  # Flash error message
+            return redirect(url_for('admin_page'))
+
+        # Hash the password using SHA-256 for secure storage
+        hashed_password = hashlib.sha256(newpassword.encode()).hexdigest()
+
+        # Store user credentials (username and hashed password) in dictionary
+        user_credentials[newusername] = {'password': hashed_password, 'phone': newphone}
+
+        # Save new user details to a CSV file or database
+        with open('new_users.csv', 'a') as f:
+            f.write(f'{newusername},{newuserid},{newpassword},{newphone}\n')
+
+        userimagefolder = 'static/faces/'+newusername+'_'+str(newuserid)
+        if not os.path.isdir(userimagefolder):
+            os.makedirs(userimagefolder)
+        i, j = 0, 0
+        cap = cv2.VideoCapture(0)
+        while 1:
+            _, frame = cap.read()
+            faces = extract_faces(frame)
+            for (x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 20), 2)
+                cv2.putText(frame, f'Images Captured: {i}/{nimgs}', (30, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 20), 2, cv2.LINE_AA)
+                if j % 5 == 0:
+                    name = newusername+'_'+str(i)+'.jpg'
+                    cv2.imwrite(userimagefolder+'/'+name, frame[y:y+h, x:x+w])
+                    i += 1
+                j += 1
+            if j == nimgs*5:
+                break
+            cv2.imshow('Adding new User', frame)
+            if cv2.waitKey(1) == 27:
+                break
+        cap.release()
+        cv2.destroyAllWindows()
+        print('Training Model')
+        train_model()
+        names, rolls, times, l = extract_attendance()
+        flash('User registered successfully!', 'success')
+        return redirect(url_for('admin_page'))
+
+    return redirect(url_for('admin_page'))
 # Logout
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     session.pop('logged_in', None)
+    session.pop('username', None)
     return redirect(url_for('login'))
 
 # Our main function which runs the Flask App
